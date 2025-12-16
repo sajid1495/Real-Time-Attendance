@@ -10,7 +10,7 @@ class Face_Recognition_System:
         self.root.title("Face Recognition System")
 
         # Background Image
-        img = Image.open(r"images\bg.png")  
+        img = Image.open(r"images\_bg.png")  
         img = img.resize((1540, 800), Image.Resampling.LANCZOS)
         self.photoimg = ImageTk.PhotoImage(img)
 
@@ -66,26 +66,26 @@ class Face_Recognition_System:
         btn4_text = Button(bg_image, text="Train Data", cursor="hand2", font=("Calibri", 14, "bold"))
         btn4_text.place(x=1095, y=310, width=180, height=40)
 
-        #help desk button
-        helpdesk = Image.open(r"images\help_desk.png")   
-        helpdesk = helpdesk.resize((180, 180), Image.Resampling.LANCZOS)
-        self.photohelpdesk = ImageTk.PhotoImage(helpdesk)
-
-        btn5 = Button(bg_image, image=self.photohelpdesk, cursor="hand2")
-        btn5.place(x=255, y=420, width=180, height=180)
-
-        btn5_text = Button(bg_image, text="Help Desk", cursor="hand2", font=("Calibri", 14, "bold"))
-        btn5_text.place(x=255, y=600, width=180, height=40)
-
         #photos button
         photos = Image.open(r"images\photos.png")  
         photos = photos.resize((180, 180), Image.Resampling.LANCZOS)
         self.photophotos = ImageTk.PhotoImage(photos)
 
-        btn6 = Button(bg_image, image=self.photophotos, cursor="hand2")
+        btn5 = Button(bg_image, image=self.photophotos, cursor="hand2")
+        btn5.place(x=255, y=420, width=180, height=180)
+
+        btn5_text = Button(bg_image, text="Photoes", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn5_text.place(x=255, y=600, width=180, height=40)
+
+        #help desk button
+        helpdesk = Image.open(r"images\help_desk.png")   
+        helpdesk = helpdesk.resize((180, 180), Image.Resampling.LANCZOS)
+        self.photohelpdesk = ImageTk.PhotoImage(helpdesk)
+
+        btn6 = Button(bg_image, image=self.photohelpdesk, cursor="hand2")
         btn6.place(x=535, y=420, width=180, height=180)
 
-        btn6_text = Button(bg_image, text="Photoes", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn6_text = Button(bg_image, text="Help Desk", cursor="hand2", font=("Calibri", 14, "bold"))
         btn6_text.place(x=535, y=600, width=180, height=40)
 
         #developer button
