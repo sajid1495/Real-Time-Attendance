@@ -1,3 +1,4 @@
+import signal, sys
 from tkinter import*
 from tkinter import ttk
 from PIL import Image, ImageTk 
@@ -135,5 +136,27 @@ class Face_Recognition_System:
 
 if __name__ == "__main__":
     root = Tk()
+
+    def _graceful_exit(signum=None, frame=None):
+        try:
+            root.quit()
+            root.destroy()
+        except:
+            pass
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, _graceful_exit)
+    signal.signal(signal.SIGTERM, _graceful_exit)
+
     obj = Face_Recognition_System(root)
+
+    def on_close():
+        try:
+            if hasattr(obj, "cap") and obj.cap:
+                obj.cap.release()
+        except:
+            pass
+        _graceful_exit()
+
+    root.protocol("WM_DELETE_WINDOW", on_close)
     root.mainloop()
