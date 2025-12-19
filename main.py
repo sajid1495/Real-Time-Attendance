@@ -2,8 +2,9 @@ import signal, sys
 from tkinter import*
 from tkinter import ttk
 from PIL import Image, ImageTk 
+import os
 from student import Student
-
+from train import Train
 
 class Face_Recognition_System:
     def __init__(self, root):
@@ -57,15 +58,15 @@ class Face_Recognition_System:
         btn3_text = Button(bg_image, text="Attendance", cursor="hand2", font=("Calibri", 14, "bold"))
         btn3_text.place(x=815, y=310, width=180, height=40)
 
-        #train data button
+        #model training
         traindata = Image.open(r"images\train_data.png")  
         traindata = traindata.resize((180, 180), Image.Resampling.LANCZOS)
         self.phototraindata = ImageTk.PhotoImage(traindata)
 
-        btn4 = Button(bg_image, image=self.phototraindata, cursor="hand2")
+        btn4 = Button(bg_image, image=self.phototraindata, cursor="hand2", command=self.train_classifier)
         btn4.place(x=1095, y=130, width=180, height=180)
 
-        btn4_text = Button(bg_image, text="Train Data", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn4_text = Button(bg_image, text="Train Model", cursor="hand2", command=self.train_classifier, font=("Calibri", 14, "bold"))
         btn4_text.place(x=1095, y=310, width=180, height=40)
 
         #photos button
@@ -73,10 +74,10 @@ class Face_Recognition_System:
         photos = photos.resize((180, 180), Image.Resampling.LANCZOS)
         self.photophotos = ImageTk.PhotoImage(photos)
 
-        btn5 = Button(bg_image, image=self.photophotos, cursor="hand2")
+        btn5 = Button(bg_image, image=self.photophotos, cursor="hand2", command=self.open_img)
         btn5.place(x=255, y=420, width=180, height=180)
 
-        btn5_text = Button(bg_image, text="Photoes", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn5_text = Button(bg_image, text="Photoes", cursor="hand2", command=self.open_img, font=("Calibri", 14, "bold"))
         btn5_text.place(x=255, y=600, width=180, height=40)
 
         #help desk button
@@ -113,10 +114,20 @@ class Face_Recognition_System:
         btn8_text.place(x=1095, y=600, width=180, height=40)
         
 
-    #button function
+    def open_img(self):
+        os.startfile("data")
+
+
+
+    #student button function
     def student_details(self):
         self.new_window = Toplevel(self.root)
         self.app = Student(self.new_window)
+    
+    #train button function
+    def train_classifier(self):
+        self.new_window = Toplevel(self.root)
+        self.app = Train(self.new_window)
 
 
 
