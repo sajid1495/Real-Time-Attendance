@@ -7,12 +7,13 @@ from datetime import datetime
 import cv2
 import os
 import numpy as np
+import sys
 
 
 class FaceRecognition:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1530x790+0+0")
+        self.root.state('zoomed')  # Full screen
         self.root.title("Face Recognition System")
 
         img = Image.open(r"images\face_recognition_bg.png")  
@@ -24,6 +25,22 @@ class FaceRecognition:
 
         title_lbl = Label(bg_label, text="FACE RECOGNITION", font=("Calibri", 35, "bold"), bg="lavender", fg="red")
         title_lbl.place(x=0, y=0, width=1540, height=55)
+
+        # Logout Button (left side)
+        logout_img = Image.open(r"images\log-out.png")
+        logout_img = logout_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.logout_photo = ImageTk.PhotoImage(logout_img)
+        
+        logout_btn = Button(bg_label, image=self.logout_photo, cursor="hand2", command=self.exit_app, bd=0, bg="lavender", activebackground="lavender")
+        logout_btn.place(x=10, y=7, width=40, height=40)
+
+        # Home Button (right side)
+        home_img = Image.open(r"images\home-button.png")
+        home_img = home_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.home_photo = ImageTk.PhotoImage(home_img)
+        
+        home_btn = Button(bg_label, image=self.home_photo, cursor="hand2", command=self.go_home, bd=0, bg="lavender", activebackground="lavender")
+        home_btn.place(x=1490, y=7, width=40, height=40)
 
         #button to start face recognition
         recognize_btn = Button(bg_label, text="Detect Face", command=self.face_recognize, font=("Helvetica", 14, "bold"), bg="red", fg="white", cursor="hand2")
@@ -144,6 +161,14 @@ class FaceRecognition:
                 
         video_cap.release()
         cv2.destroyAllWindows()
+
+    # Go to Home (close current window)
+    def go_home(self):
+        self.root.destroy()
+
+    # Exit entire application
+    def exit_app(self):
+        sys.exit()
 
 
 

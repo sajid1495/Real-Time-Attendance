@@ -11,7 +11,7 @@ from face_recognition import FaceRecognition
 class Attendance:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1530x790+0+0")
+        self.root.state('zoomed')  # Full screen
         self.root.title("Attendance Management System")
         self.root.focus_force()
 
@@ -34,6 +34,22 @@ class Attendance:
 
         title_lbl = Label(bg_image, text="ATTENDANCE MANAGEMENT SYSTEM", font=("Calibri", 35, "bold"), bg="lavender", fg="darkgreen")
         title_lbl.place(x=0, y=0, width=1540, height=55)
+
+        # Logout Button (left side)
+        logout_img = Image.open(r"images\log-out.png")
+        logout_img = logout_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.logout_photo = ImageTk.PhotoImage(logout_img)
+        
+        logout_btn = Button(bg_image, image=self.logout_photo, cursor="hand2", command=self.exit_app, bd=0, bg="lavender", activebackground="lavender")
+        logout_btn.place(x=10, y=7, width=40, height=40)
+
+        # Home Button (right side)
+        home_img = Image.open(r"images\home-button.png")
+        home_img = home_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.home_photo = ImageTk.PhotoImage(home_img)
+        
+        home_btn = Button(bg_image, image=self.home_photo, cursor="hand2", command=self.go_home, bd=0, bg="lavender", activebackground="lavender")
+        home_btn.place(x=1490, y=7, width=40, height=40)
 
         # Main Frame (covers the whole display below title)
         main_frame = Frame(bg_image, bd=2, relief=RIDGE, bg="white")
@@ -275,6 +291,13 @@ class Attendance:
         self.var_atten_date.set("")
         self.var_atten_status.set("Status")
 
+    # Go to Home (close current window)
+    def go_home(self):
+        self.root.destroy()
+
+    # Exit entire application
+    def exit_app(self):
+        sys.exit()
 
 
 

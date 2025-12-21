@@ -7,23 +7,29 @@ from student import Student
 from train import Train
 from face_recognition import FaceRecognition
 from attendance import Attendance
+from developer import Developer
+from helpdesk import HelpDesk
 
 class Face_Recognition_System:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1530x790+0+0")
+        self.root.state('zoomed') 
         self.root.title("Face Recognition System")
+
+        # Get screen dimensions
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
 
         # Background Image
         img = Image.open(r"images\_bg.png")  
-        img = img.resize((1540, 800), Image.Resampling.LANCZOS)
+        img = img.resize((screen_width, screen_height), Image.Resampling.LANCZOS)
         self.photoimg = ImageTk.PhotoImage(img)
 
         bg_image = Label(self.root, image=self.photoimg)
-        bg_image.place(x=0, y=0, width=1540, height=800)
+        bg_image.place(x=0, y=0, width=screen_width, height=screen_height)
 
         title_lbl = Label(bg_image, text="REAL TIME ATTENDANCE SYSTEM SOFTWARE", font=("Calibri", 35, "bold"), bg="lavender", fg="red")
-        title_lbl.place(x=0, y=0, width=1540, height=55)
+        title_lbl.place(x=0, y=0, width=screen_width, height=55)
 
 
         #students button
@@ -87,10 +93,10 @@ class Face_Recognition_System:
         helpdesk = helpdesk.resize((180, 180), Image.Resampling.LANCZOS)
         self.photohelpdesk = ImageTk.PhotoImage(helpdesk)
 
-        btn6 = Button(bg_image, image=self.photohelpdesk, cursor="hand2")
+        btn6 = Button(bg_image, image=self.photohelpdesk, cursor="hand2", command=self.help_desk)
         btn6.place(x=535, y=420, width=180, height=180)
 
-        btn6_text = Button(bg_image, text="Help Desk", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn6_text = Button(bg_image, text="Help Desk", cursor="hand2", command=self.help_desk, font=("Calibri", 14, "bold"))
         btn6_text.place(x=535, y=600, width=180, height=40)
 
         #developer button
@@ -98,10 +104,10 @@ class Face_Recognition_System:
         developer = developer.resize((180, 180), Image.Resampling.LANCZOS)
         self.photodeveloper = ImageTk.PhotoImage(developer)
 
-        btn7 = Button(bg_image, image=self.photodeveloper, cursor="hand2")
+        btn7 = Button(bg_image, image=self.photodeveloper, cursor="hand2", command=self.developer)
         btn7.place(x=815, y=420, width=180, height=180)
 
-        btn7_text = Button(bg_image, text="Developer", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn7_text = Button(bg_image, text="Developer", cursor="hand2", command=self.developer, font=("Calibri", 14, "bold"))
         btn7_text.place(x=815, y=600, width=180, height=40)
 
         #exit button
@@ -109,10 +115,10 @@ class Face_Recognition_System:
         exitbtn = exitbtn.resize((180, 180), Image.Resampling.LANCZOS)
         self.photoexit = ImageTk.PhotoImage(exitbtn)
 
-        btn8 = Button(bg_image, image=self.photoexit, cursor="hand2")
+        btn8 = Button(bg_image, image=self.photoexit, cursor="hand2", command=self.exit_app)
         btn8.place(x=1095, y=420, width=180, height=180)
 
-        btn8_text = Button(bg_image, text="Exit", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn8_text = Button(bg_image, text="Exit", cursor="hand2", command=self.exit_app, font=("Calibri", 14, "bold"))
         btn8_text.place(x=1095, y=600, width=180, height=40)
         
 
@@ -146,9 +152,20 @@ class Face_Recognition_System:
         self.attendance_window = Toplevel(self.root)
         self.app = Attendance(self.attendance_window)
 
+    #developer function
+    def developer(self):
+        self.new_window = Toplevel(self.root)
+        self.app = Developer(self.new_window)
 
+    #help desk function
+    def help_desk(self):
+        self.new_window = Toplevel(self.root)
+        self.app = HelpDesk(self.new_window)
 
-
+    #exit function
+    def exit_app(self):
+        self.root.quit()
+        self.root.destroy()
 
 
 

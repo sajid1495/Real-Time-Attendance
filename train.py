@@ -5,12 +5,13 @@ import mysql.connector
 import cv2
 import os
 import numpy as np
+import sys
 
 
 class Train:
     def __init__(self, root):
         self.root = root
-        self.root.geometry("1530x790+0+0")
+        self.root.state('zoomed')  # Full screen
         self.root.title("Face Recognition System")
 
         img = Image.open(r"images\_bg.png")  
@@ -22,6 +23,22 @@ class Train:
 
         title_lbl = Label(bg_image, text="MODEL TRAINING", font=("Calibri", 35, "bold"), bg="lavender", fg="red")
         title_lbl.place(x=0, y=0, width=1540, height=55)
+
+        # Logout Button (left side)
+        logout_img = Image.open(r"images\log-out.png")
+        logout_img = logout_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.logout_photo = ImageTk.PhotoImage(logout_img)
+        
+        logout_btn = Button(bg_image, image=self.logout_photo, cursor="hand2", command=self.exit_app, bd=0, bg="lavender", activebackground="lavender")
+        logout_btn.place(x=10, y=7, width=40, height=40)
+
+        # Home Button (right side)
+        home_img = Image.open(r"images\home-button.png")
+        home_img = home_img.resize((40, 40), Image.Resampling.LANCZOS)
+        self.home_photo = ImageTk.PhotoImage(home_img)
+        
+        home_btn = Button(bg_image, image=self.home_photo, cursor="hand2", command=self.go_home, bd=0, bg="lavender", activebackground="lavender")
+        home_btn.place(x=1490, y=7, width=40, height=40)
 
         # Create a frame to center the button
         button_frame = Frame(bg_image, bg="white", bd=3, relief=RIDGE)
@@ -129,6 +146,14 @@ class Train:
             messagebox.showerror("Error", f"Training failed: {str(e)}", parent=self.root)
         
         messagebox.showinfo("Success", f"Model trained successfully!\n\nTotal images: {len(faces)}\nUnique IDs: {len(set(ids))}", parent=self.root)
+
+    # Go to Home (close current window)
+    def go_home(self):
+        self.root.destroy()
+
+    # Exit entire application
+    def exit_app(self):
+        sys.exit()
 
 
 if __name__ == "__main__":
