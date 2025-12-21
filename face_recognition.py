@@ -2,6 +2,8 @@ from tkinter import*
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk 
 import mysql.connector 
+from time import strftime
+from datetime import datetime
 import cv2
 import os
 import numpy as np
@@ -28,8 +30,29 @@ class FaceRecognition:
         recognize_btn.place(x=1040, y=653, width=200, height=35)
 
 
+    #=========attendance function=========
+    def mark_attendance(self, i, r, n, d):
+        with open("attendance.csv", "r+", newline="\n") as f:
+            myDataList = f.readlines()
+            now = datetime.now()
+            today_date = now.strftime("%d-%m-%Y")
+            
+
+            for line in myDataList:
+                entry = line.strip().split(",")
+                if len(entry) >= 5:
+                    student_id = str(entry[0])
+                    attendance_date = entry[4].split()[0] if " " in entry[4] else entry[4]
+                    if str(i) == student_id and attendance_date == today_date:
+                        return  
+
+            dtString = now.strftime("%d-%m-%Y,%H:%M:%S")
+            f.writelines(f"\n{i},{r},{n},{d},{dtString},Present")
+
+
+
+    #=========face recognition function=========
     def face_recognize(self):
-        # Connect to database once and cache student data
         try:
             conn = mysql.connector.connect(host="localhost", username="root", password="sajid@96", database="face_recognition_attendance")
             my_cursor = conn.cursor()
@@ -37,11 +60,11 @@ class FaceRecognition:
             students = my_cursor.fetchall()
             conn.close()
             
-            # Create a dictionary for fast lookup (convert Student_id to int for matching)
+            
             student_data = {}
             for student in students:
                 try:
-                    student_id = int(student[0])  # Convert to int to match classifier output
+                    student_id = int(student[0])  
                 except:
                     student_id = student[0]
                 student_data[student_id] = {
@@ -49,7 +72,7 @@ class FaceRecognition:
                     "roll": student[2],
                     "dept": student[3]
                 }
-            print(f"Loaded {len(student_data)} students: {list(student_data.keys())}")  # Debug info
+            
         except Exception as e:
             messagebox.showerror("Database Error", f"Could not connect to database: {e}")
             return
@@ -65,20 +88,21 @@ class FaceRecognition:
                 id, predict = clf.predict(gray_image[y:y + h, x:x + w])
                 confidence = int((100 * (1 - predict / 300)))
                 
-                print(f"Detected ID: {id}, Confidence: {confidence}")  # Debug info
 
-                # Get student info from cached data
                 if id in student_data:
                     n = student_data[id]["name"]
                     r = student_data[id]["roll"]
                     d = student_data[id]["dept"]
+                    i = id 
                 else:
                     n, r, d = "Unknown", "N/A", "N/A"
  
                 if confidence > 77:
-                    cv2.putText(img, f"Roll:{r}", (x, y - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
-                    cv2.putText(img, f"Name:{n}", (x, y - 55), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
-                    cv2.putText(img, f"Department:{d}", (x, y - 35), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
+                    cv2.putText(img, f"ID:{i}", (x, y - 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
+                    cv2.putText(img, f"Roll:{r}", (x, y - 55), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
+                    cv2.putText(img, f"Name:{n}", (x, y - 35), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
+                    cv2.putText(img, f"Department:{d}", (x, y - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
+                    self.mark_attendance(i, r, n, d)
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
                     cv2.putText(img, "Unknown Face", (x, y - 55), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (250, 180, 230), 2)
@@ -95,29 +119,26 @@ class FaceRecognition:
         clf = cv2.face.LBPHFaceRecognizer_create()
         clf.read("classifier.xml")
 
-        video_cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Use DirectShow on Windows
+        video_cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  
         
-        # Check if camera opened successfully
         if not video_cap.isOpened():
             messagebox.showerror("Error", "Could not open camera!")
             return
         
-        # Create a named window and bring it to front
         cv2.namedWindow("Welcome TO face Recognition", cv2.WINDOW_NORMAL)
         
         while True:
             ret, img = video_cap.read()
             if not ret or img is None:
-                continue  # Skip frame if not read properly
+                continue  
             img = recognize(img, clf, faceCascade)
             cv2.imshow("Welcome TO face Recognition", img)
             
-            # Wait for key press - 'Enter' key (13) or 'q' to quit
             key = cv2.waitKey(1) & 0xFF
             if key == 13 or key == ord('q'):
                 break
-            
-            # Check if window was closed by clicking X button
+
+
             if cv2.getWindowProperty("Welcome TO face Recognition", cv2.WND_PROP_VISIBLE) < 1:
                 break
                 
