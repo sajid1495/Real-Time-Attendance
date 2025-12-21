@@ -6,6 +6,7 @@ import os
 from student import Student
 from train import Train
 from face_recognition import FaceRecognition
+from attendance import Attendance
 
 class Face_Recognition_System:
     def __init__(self, root):
@@ -53,10 +54,10 @@ class Face_Recognition_System:
         attendance = attendance.resize((180, 180), Image.Resampling.LANCZOS)
         self.photoattendance = ImageTk.PhotoImage(attendance)
 
-        btn3 = Button(bg_image, image=self.photoattendance, cursor="hand2")
+        btn3 = Button(bg_image, image=self.photoattendance, cursor="hand2", command=self.attendance)
         btn3.place(x=815, y=130, width=180, height=180)
 
-        btn3_text = Button(bg_image, text="Attendance", cursor="hand2", font=("Calibri", 14, "bold"))
+        btn3_text = Button(bg_image, text="Attendance", cursor="hand2", command=self.attendance, font=("Calibri", 14, "bold"))
         btn3_text.place(x=815, y=310, width=180, height=40)
 
         #model training
@@ -134,6 +135,16 @@ class Face_Recognition_System:
     def face_recognition(self):
         self.new_window = Toplevel(self.root)
         self.app = FaceRecognition(self.new_window)
+
+    #attendance function
+    def attendance(self):
+        # Check if attendance window already exists and is open
+        if hasattr(self, 'attendance_window') and self.attendance_window.winfo_exists():
+            self.attendance_window.lift()
+            self.attendance_window.focus_force()
+            return
+        self.attendance_window = Toplevel(self.root)
+        self.app = Attendance(self.attendance_window)
 
 
 
